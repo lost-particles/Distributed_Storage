@@ -65,42 +65,62 @@ beforeEach(() => {
 
 test('(2 pts) local.status.get(sid)', (done) => {
   local.status.get('sid', (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(id.getSID(node));
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(id.getSID(node));
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(2 pts) local.status.get(ip)', (done) => {
   local.status.get('ip', (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(node.ip);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(node.ip);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(2 pts) local.status.get(port)', (done) => {
   local.status.get('port', (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(node.port);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(node.port);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(2 pts) local.status.get(counts)', (done) => {
   local.status.get('counts', (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBeDefined();
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBeDefined();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(2 pts) local.status.get(random)', (done) => {
   local.status.get('random', (e, v) => {
-    expect(e).toBeDefined();
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeDefined();
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
@@ -108,34 +128,50 @@ test('(2 pts) local.status.get(random)', (done) => {
 
 test('(4 pts) local.routes.get(status)', (done) => {
   local.routes.get('status', (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(status);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(status);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(4 pts) local.routes.get(routes)', (done) => {
   local.routes.get('routes', (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(routes);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(routes);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(4 pts) local.routes.get(comm)', (done) => {
   local.routes.get('comm', (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(comm);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(comm);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(4 pts) local.routes.get(random)', (done) => {
   local.routes.get('random', (e, v) => {
-    expect(e).toBeDefined();
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeDefined();
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
@@ -148,9 +184,13 @@ test('(8 pts) local.routes.put/get(echo)', (done) => {
 
   local.routes.put(echoService, 'echo', (e, v) => {
     local.routes.get('echo', (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v.echo()).toBe('echo!');
-      done();
+      try {
+        expect(e).toBeFalsy();
+        expect(v.echo()).toBe('echo!');
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 });
@@ -166,9 +206,13 @@ test('(10 pts) local.comm(status.get(nid))', (done) => {
   distribution.node.start((server) => {
     local.comm.send(message, remote, (e, v) => {
       server.close();
-      expect(e).toBeFalsy();
-      expect(v).toBe(id.getNID(node));
-      done();
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toBe(id.getNID(node));
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 });
@@ -190,14 +234,22 @@ test('(9 pts) RPC1', (done) => {
   distribution.node.start((server) => {
     local.routes.put(rpcService, 'rpcService', (e, v) => {
       local.routes.get('rpcService', (e, s) => {
-        expect(e).toBeFalsy();
+        try {
+          expect(e).toBeFalsy();
+        } catch (error) {
+          done(error);
+        }
         s.addOneRPC((e, v) => {
           s.addOneRPC((e, v) => {
             s.addOneRPC((e, v) => {
               server.close();
-              expect(e).toBeFalsy();
-              expect(v).toBe(3);
-              done();
+              try {
+                expect(e).toBeFalsy();
+                expect(v).toBe(3);
+                done();
+              } catch (error) {
+                done(error);
+              }
             });
           });
         });
@@ -210,19 +262,27 @@ test('(9 pts) RPC1', (done) => {
 
 test('(2 pts) local.groups.get(random)', (done) => {
   distribution.local.groups.get('random', (e, v) => {
-    expect(e).toBeDefined();
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeDefined();
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
 test('(2 pts) local.groups.del(random)', (done) => {
   distribution.local.groups.del('random', (e, v) => {
-    expect(e).toBeDefined();
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeDefined();
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
@@ -233,9 +293,13 @@ test('(2 pts) local.groups.put(browncs)', (done) => {
   };
 
   distribution.local.groups.put('browncs', g, (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(g);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(g);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
@@ -247,9 +311,13 @@ test('(2 pts) local.groups.put/get(browncs)', (done) => {
 
   distribution.local.groups.put('browncs', g, (e, v) => {
     distribution.local.groups.get('browncs', (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v).toBe(g);
-      done();
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toBe(g);
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 });
@@ -263,9 +331,13 @@ test('(2 pts) local.groups.put/get/del(browncs)', (done) => {
   distribution.local.groups.put('browncs', g, (e, v) => {
     distribution.local.groups.get('browncs', (e, v) => {
       distribution.local.groups.del('browncs', (e, v) => {
-        expect(e).toBeFalsy();
-        expect(v).toBe(g);
-        done();
+        try {
+          expect(e).toBeFalsy();
+          expect(v).toBe(g);
+          done();
+        } catch (error) {
+          done(error);
+        }
       });
     });
   });
@@ -281,10 +353,14 @@ test('(2 pts) local.groups.put/get/del/get(browncs)', (done) => {
     distribution.local.groups.get('browncs', (e, v) => {
       distribution.local.groups.del('browncs', (e, v) => {
         distribution.local.groups.get('browncs', (e, v) => {
-          expect(e).toBeDefined();
-          expect(e).toBeInstanceOf(Error);
-          expect(v).toBeFalsy();
-          done();
+          try {
+            expect(e).toBeDefined();
+            expect(e).toBeInstanceOf(Error);
+            expect(v).toBeFalsy();
+            done();
+          } catch (error) {
+            done(error);
+          }
         });
       });
     });
@@ -306,9 +382,13 @@ test('(2 pts) local.groups.put(dummy)/add(n1)/get(dummy)', (done) => {
       };
 
       distribution.local.groups.get('dummy', (e, v) => {
-        expect(e).toBeFalsy();
-        expect(v).toEqual(expectedGroup);
-        done();
+        try {
+          expect(e).toBeFalsy();
+          expect(v).toEqual(expectedGroup);
+          done();
+        } catch (error) {
+          done(error);
+        }
       });
     });
   });
@@ -327,9 +407,13 @@ test('(2 pts) local.groups.put(dummy)/rem(n1)/get(dummy)', (done) => {
       };
 
       distribution.local.groups.get('dummy', (e, v) => {
-        expect(e).toBeFalsy();
-        expect(v).toEqual(expectedGroup);
-        done();
+        try {
+          expect(e).toBeFalsy();
+          expect(v).toEqual(expectedGroup);
+          done();
+        } catch (error) {
+          done(error);
+        }
       });
     });
   });
@@ -339,91 +423,103 @@ test('(2 pts) local.groups.put(dummy)/rem(n1)/get(dummy)', (done) => {
 
 // ---mem---
 
-test('(0 pts) local.mem.get(jcarb)', (done) => {
+test('(0.5 pts) local.mem.get(jcarb)', (done) => {
   const key = 'jcarbmg';
 
   distribution.local.mem.get(key, (e, v) => {
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
-test('(0 pts) local.mem.del(jcarb)', (done) => {
+test('(0.5 pts) local.mem.del(jcarb)', (done) => {
   const key = 'jcarbmd';
 
   distribution.local.mem.del(key, (e, v) => {
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
-test('(0 pts) local.mem.put(jcarb)', (done) => {
+test('(0.5 pts) local.mem.put(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbmp';
 
   distribution.local.mem.put(user, key, (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(user);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(user);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
-test('(0 pts) local.mem.put/get(jcarb)', (done) => {
+test('(0.5 pts) local.mem.put/get(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbmpg';
 
   distribution.local.mem.put(user, key, (e, v) => {
     distribution.local.mem.get(key, (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v).toBe(user);
-      done();
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toBe(user);
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 });
 
-test('(0 pts) local.mem.put/del(jcarb)', (done) => {
+test('(0.5 pts) local.mem.put/del(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbmpd';
 
   distribution.local.mem.put(user, key, (e, v) => {
     distribution.local.mem.del(key, (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v).toBe(user);
-      done();
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toBe(user);
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 });
 
-test('(0 pts) local.mem.put/del/get(jcarb)', (done) => {
+test('(0.5 pts) local.mem.put/del/get(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbmpdg';
 
   distribution.local.mem.put(user, key, (e, v) => {
     distribution.local.mem.del(key, (e, v) => {
       distribution.local.mem.get(key, (e, v) => {
-        expect(e).toBeInstanceOf(Error);
-        expect(v).toBeFalsy();
-        done();
+        try {
+          expect(e).toBeInstanceOf(Error);
+          expect(v).toBeFalsy();
+          done();
+        } catch (error) {
+          done(error);
+        }
       });
     });
   });
 });
 
-test('(0 pts) local.mem.put(no key)', (done) => {
-  const user = {first: 'Josiah', last: 'Carberry'};
-
-  distribution.local.mem.put(user, null, (e, v) => {
-    distribution.local.mem.get(id.getID(user), (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v).toBe(user);
-      done();
-    });
-  });
-});
-
-test('(0 pts) local.mem.get(no key)', (done) => {
+test('(2 pts) local.mem.get(no key)', (done) => {
   const users = [
     {first: 'Emma', last: 'Watson'},
     {first: 'John', last: 'Krasinski'},
@@ -439,102 +535,135 @@ test('(0 pts) local.mem.get(no key)', (done) => {
     distribution.local.mem.put(users[1], keys[1], (e, v) => {
       distribution.local.mem.put(users[2], keys[2], (e, v) => {
         distribution.local.mem.get(null, (e, v) => {
-          expect(e).toBeFalsy();
-          expect(Object.values(v)).toEqual(expect.arrayContaining(keys));
-          done();
+          try {
+            expect(e).toBeFalsy();
+            expect(Object.values(v)).toEqual(expect.arrayContaining(keys));
+            done();
+          } catch (error) {
+            done(error);
+          }
         });
       });
     });
   });
 });
 
+test('(0.5 pts) local.mem.put(no key)', (done) => {
+  const user = {first: 'Josiah', last: 'Carberry'};
+
+  distribution.local.mem.put(user, null, (e, v) => {
+    distribution.local.mem.get(id.getID(user), (e, v) => {
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toBe(user);
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
+});
+
+
 // ---store---
 
-test('(0 pts) local.store.get(jcarb)', (done) => {
+test('(0.5 pts) local.store.get(jcarb)', (done) => {
   const key = 'jcarbsg';
 
   distribution.local.store.get(key, (e, v) => {
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
-test('(0 pts) local.store.del(jcarb)', (done) => {
+test('(0.5 pts) local.store.del(jcarb)', (done) => {
   const key = 'jcarbsd';
 
   distribution.local.store.del(key, (e, v) => {
-    expect(e).toBeInstanceOf(Error);
-    expect(v).toBeFalsy();
-    done();
+    try {
+      expect(e).toBeInstanceOf(Error);
+      expect(v).toBeFalsy();
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
-test('(0 pts) local.store.put(jcarb)', (done) => {
+test('(0.5 pts) local.store.put(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbsp';
 
   distribution.local.store.put(user, key, (e, v) => {
-    expect(e).toBeFalsy();
-    expect(v).toBe(user);
-    done();
+    try {
+      expect(e).toBeFalsy();
+      expect(v).toBe(user);
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 });
 
-test('(0 pts) local.store.put/get(jcarb)', (done) => {
+test('(0.5 pts) local.store.put/get(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbspg';
 
   distribution.local.store.put(user, key, (e, v) => {
     distribution.local.store.get(key, (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v).toEqual(user);
-      done();
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toEqual(user);
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 });
 
-test('(0 pts) local.store.put/del(jcarb)', (done) => {
+test('(0.5 pts) local.store.put/del(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbspd';
 
   distribution.local.store.put(user, key, (e, v) => {
     distribution.local.store.del(key, (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v).toEqual(user);
-      done();
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toEqual(user);
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 });
 
-test('(0 pts) local.store.put/del/get(jcarb)', (done) => {
+test('(0.5 pts) local.store.put/del/get(jcarb)', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbspdg';
 
   distribution.local.store.put(user, key, (e, v) => {
     distribution.local.store.del(key, (e, v) => {
       distribution.local.store.get(key, (e, v) => {
-        expect(e).toBeInstanceOf(Error);
-        expect(v).toBeFalsy();
-        done();
+        try {
+          expect(e).toBeInstanceOf(Error);
+          expect(v).toBeFalsy();
+          done();
+        } catch (error) {
+          done(error);
+        }
       });
     });
   });
 });
 
-test('(0 pts) local.store.put(no key)', (done) => {
-  const user = {first: 'Josiah', last: 'Carberry'};
-
-  distribution.local.store.put(user, null, (e, v) => {
-    distribution.local.store.get(id.getID(user), (e, v) => {
-      expect(e).toBeFalsy();
-      expect(v).toEqual(user);
-      done();
-    });
-  });
-});
-
-test('(0 pts) local.store.get(no key)', (done) => {
+test('(2 pts) local.store.get(no key)', (done) => {
   const users = [
     {first: 'Emma', last: 'Watson'},
     {first: 'John', last: 'Krasinski'},
@@ -550,18 +679,38 @@ test('(0 pts) local.store.get(no key)', (done) => {
     distribution.local.store.put(users[1], keys[1], (e, v) => {
       distribution.local.store.put(users[2], keys[2], (e, v) => {
         distribution.local.store.get(null, (e, v) => {
-          expect(e).toBeFalsy();
-          expect(Object.values(v)).toEqual(expect.arrayContaining(keys));
-          done();
+          try {
+            expect(e).toBeFalsy();
+            expect(Object.values(v)).toEqual(expect.arrayContaining(keys));
+            done();
+          } catch (error) {
+            done(error);
+          }
         });
       });
     });
   });
 });
 
+test('(0.5 pts) local.store.put(no key)', (done) => {
+  const user = {first: 'Josiah', last: 'Carberry'};
+
+  distribution.local.store.put(user, null, (e, v) => {
+    distribution.local.store.get(id.getID(user), (e, v) => {
+      try {
+        expect(e).toBeFalsy();
+        expect(v).toEqual(user);
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
+});
+
 // ---Hashing---
 
-test('(0 pts) naiveHash() - 1', (done) => {
+test('(2 pts) naiveHash() - 1', (done) => {
   const key = 'jcarb';
   const nodes = [
     {ip: '127.0.0.1', port: 10000},
@@ -577,12 +726,16 @@ test('(0 pts) naiveHash() - 1', (done) => {
   // oracle is used to test correctness
   const expectedHash = oracle('naiveHash', kid, nids, 1);
 
-  expect(expectedHash).toBeTruthy();
-  expect(hash).toBe(expectedHash);
-  done();
+  try {
+    expect(expectedHash).toBeTruthy();
+    expect(hash).toBe(expectedHash);
+    done();
+  } catch (error) {
+    done(error);
+  }
 });
 
-test('(0 pts) consistentHash() - 1', (done) => {
+test('(2 pts) consistentHash() - 1', (done) => {
   const key = 'jcarb';
   const nodes = [
     {ip: '127.0.0.1', port: 10000},
@@ -598,12 +751,16 @@ test('(0 pts) consistentHash() - 1', (done) => {
   // oracle is used to test correctness
   const expectedHash = oracle('consistentHash', kid, nids, 1);
 
-  expect(expectedHash).toBeTruthy();
-  expect(hash).toBe(expectedHash);
-  done();
+  try {
+    expect(expectedHash).toBeTruthy();
+    expect(hash).toBe(expectedHash);
+    done();
+  } catch (error) {
+    done(error);
+  }
 });
 
-test('(0 pts) rendezvousHash() - 1', (done) => {
+test('(2 pts) rendezvousHash() - 1', (done) => {
   const key = 'jcarb';
   const nodes = [
     {ip: '127.0.0.1', port: 10000},
@@ -619,7 +776,11 @@ test('(0 pts) rendezvousHash() - 1', (done) => {
   // oracle is used to test correctness
   const expectedHash = oracle('rendezvousHash', kid, nids, 1);
 
-  expect(expectedHash).toBeTruthy();
-  expect(hash).toBe(expectedHash);
-  done();
+  try {
+    expect(expectedHash).toBeTruthy();
+    expect(hash).toBe(expectedHash);
+    done();
+  } catch (error) {
+    done(error);
+  }
 });

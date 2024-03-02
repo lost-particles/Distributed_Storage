@@ -1,3 +1,4 @@
+const assert = require('assert');
 var crypto = require('crypto');
 
 // The ID is the SHA256 hash of the JSON representation of the object
@@ -21,12 +22,29 @@ function getSID(node) {
 
 
 function idToNum(id) {
-  return parseInt(id, 16);
+  let n = parseInt(id, 16);
+  assert(!isNaN(n), 'idToNum: id is not in KID form!');
+  return n;
 }
 
+function naiveHash(kid, nids) {
+  nids.sort();
+  return nids[idToNum(kid) % nids.length];
+}
+
+function consistentHash(kid, nids) {
+}
+
+
+function rendezvousHash(kid, nids) {
+}
 
 module.exports = {
   getNID: getNID,
   getSID: getSID,
   getID: getID,
+  idToNum: idToNum,
+  naiveHash: naiveHash,
+  consistentHash: consistentHash,
+  rendezvousHash: rendezvousHash,
 };
