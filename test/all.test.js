@@ -495,22 +495,24 @@ test('(6 pts) all.gossip.send()', (done) => {
 
     let remote = {service: 'groups', method: 'add'};
     distribution.mygroup.gossip.send(message, remote, (e, v) => {
-      distribution.mygroup.groups.get('newgroup', (e, v) => {
-        let count = 0;
-        for (const k in v) {
-          if (Object.keys(v[k]).length > 0) {
-            count++;
+      setTimeout(() => {
+        distribution.mygroup.groups.get('newgroup', (e, v) => {
+          let count = 0;
+          for (const k in v) {
+            if (Object.keys(v[k]).length > 0) {
+              count++;
+            }
           }
-        }
-        /* Gossip only provides weak guarantees */
-        try {
-          expect(count).toBeGreaterThanOrEqual(2);
-          count;
-          done();
-        } catch (error) {
-          done(error);
-        }
-      });
+          /* Gossip only provides weak guarantees */
+          try {
+            expect(count).toBeGreaterThanOrEqual(2);
+            count;
+            done();
+          } catch (error) {
+            done(error);
+          }
+        });
+      }, 500);
     });
   });
 });

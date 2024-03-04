@@ -20,7 +20,6 @@ function getSID(node) {
 }
 
 
-
 function idToNum(id) {
   let n = parseInt(id, 16);
   assert(!isNaN(n), 'idToNum: id is not in KID form!');
