@@ -3,7 +3,9 @@ id = require('../util/id.js');
 const mem = {
   records: new Map(),
   get: function(key, callback=(e, v)=>{}) {
-    if (this.records.hasOwnProperty(key)) {
+    if (key === null) {
+      callback(null, Array.from(this.records.keys()));
+    } else if (this.records.has(key)) {
       callback(null, this.records.get(key));
     } else {
       callback(Error('Key not found'), null);
@@ -19,8 +21,9 @@ const mem = {
     callback(null, this.records.get(key));
   },
   del: function(key, callback=(e, v)=>{}) {
-    if (this.records.hasOwnProperty(key)) {
-      const deletedRecord = this.records.delete(key);
+    if (this.records.has(key)) {
+      const deletedRecord = this.records.get(key);
+      this.records.delete(key);
       callback(null, deletedRecord);
     } else {
       callback(Error('Key not found for deleting'), null);

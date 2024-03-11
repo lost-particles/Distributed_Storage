@@ -24,17 +24,35 @@ status.get(['nid'], (e, v)=>{
 const store = {
   dirPath: '../../store/'+nid+'/',
   get: function(key, callback=(e, v)=>{}) {
-    fs.readFile(path.join(__dirname, self.dirPath+key), 'utf8', callback);
+    fs.readFile(path.join(__dirname, this.dirPath+key+'.txt'), 'utf8',
+        (err, data) => {
+          if (err) {
+            callback(Error('File could not be found'), null);
+          } else {
+            callback(null, util.deserialize(data));
+          }
+        });
   },
   put: function(obj, key, callback=console.log) {
     if (key === null) {
       key = id.getID(obj);
     }
-    fs.writeFile(path.join(__dirname, self.dirPath+key),
-        util.serialize(obj), callback);
+    const filePath = path.join(__dirname, this.dirPath+key+'.txt');
+    fs.mkdir(this.dirPath, {recursive: true}, (err) => {
+      // There could be issue down the line due to the
+      // use of flag { flag: 'wx' }
+      fs.writeFile(filePath,
+          util.serialize(obj), (err) => {
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, obj);
+            }
+          });
+    });
   },
   del: function(key, callback = console.log) {
-    fs.unlink(path.join(__dirname, self.dirPath+key), (err) => {
+    fs.unlink(path.join(__dirname, this.dirPath+key), (err) => {
       if (err) {
         callback(err, null);
       } else {
