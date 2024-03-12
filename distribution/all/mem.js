@@ -18,7 +18,7 @@ let mem = (config) => {
           nids.push(id.getID(v[sid]));
           nodeHashes.set(id.getID(v[sid]), v[sid]);
         });
-        targetNid = util.naiveHash(id.getID(key), nids);
+        targetNid = context.hash(id.getID(key), nids);
         const remote = {node: nodeHashes.get(targetNid),
           service: 'mem', method: 'get'};
         const message = [key];
@@ -37,14 +37,32 @@ let mem = (config) => {
           nids.push(id.getID(v[sid]));
           nodeHashes.set(id.getID(v[sid]), v[sid]);
         });
-        targetNid = util.naiveHash(id.getID(key), nids);
+        targetNid = context.hash(id.getID(key), nids);
         const remote = {node: nodeHashes.get(targetNid),
           service: 'mem', method: 'put'};
         const message = [obj, key];
         localComm.send(message, remote, callback);
       }
     });
-  }, del: () => {}, reconf: () => {}};
+  }, del: function(key, callback=(e, v)=>{}) {
+    localGroups.get(context.gid, (e, v)=>{
+      const nodeHashes = new Map();
+      const nids =[];
+      if (e && Object.keys(e).length !== 0) {
+        callback(e, null);
+      } else {
+        Object.keys(v).forEach((sid)=>{
+          nids.push(id.getID(v[sid]));
+          nodeHashes.set(id.getID(v[sid]), v[sid]);
+        });
+        targetNid = context.hash(id.getID(key), nids);
+        const remote = {node: nodeHashes.get(targetNid),
+          service: 'mem', method: 'del'};
+        const message = [key];
+        localComm.send(message, remote, callback);
+      }
+    });
+  }, reconf: () => {}};
 };
 
 
