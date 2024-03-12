@@ -1,12 +1,19 @@
 id = require('../util/id.js');
 
-const mem = {
+let context = {gid: 'local'};
+let mem = {
   records: new Map(),
   get: function(key, callback=(e, v)=>{}) {
     if (key === null) {
-      callback(null, Array.from(this.records.keys()));
-    } else if (this.records.has(key)) {
-      callback(null, this.records.get(key));
+      keys = [];
+      for (let ele of this.records.keys()) {
+        if (ele.split('#')[0]===context.gid) {
+          keys.push(ele.split('#')[1]);
+        }
+      }
+      callback(null, keys);
+    } else if (this.records.has(context.gid+'#'+key)) {
+      callback(null, this.records.get(context.gid+'#'+key));
     } else {
       callback(Error('Key not found'), null);
     }
@@ -17,13 +24,13 @@ const mem = {
     if (key === null) {
       key = id.getID(obj);
     }
-    this.records.set(key, obj);
-    callback(null, this.records.get(key));
+    this.records.set(context.gid+'#'+key, obj);
+    callback(null, this.records.get(context.gid+'#'+key));
   },
   del: function(key, callback=(e, v)=>{}) {
-    if (this.records.has(key)) {
-      const deletedRecord = this.records.get(key);
-      this.records.delete(key);
+    if (this.records.has(context.gid+'#'+key)) {
+      const deletedRecord = this.records.get(context.gid+'#'+key);
+      this.records.delete(context.gid+'#'+key);
       callback(null, deletedRecord);
     } else {
       callback(Error('Key not found for deleting'), null);

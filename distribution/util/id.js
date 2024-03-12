@@ -22,6 +22,7 @@ function getSID(node) {
 
 function idToNum(id) {
   let n = parseInt(id, 16);
+  // let n = BigInt('0x'+id);
   assert(!isNaN(n), 'idToNum: id is not in KID form!');
   return n;
 }
@@ -32,10 +33,35 @@ function naiveHash(kid, nids) {
 }
 
 function consistentHash(kid, nids) {
+  const ringList = [];
+  const hexToDecMap = new Map();
+  nids.forEach((nid)=>{
+    ringList.push(idToNum(nid));
+    hexToDecMap.set(idToNum(nid), nid);
+  });
+  ringList.sort();
+  objId = idToNum(kid);
+  nodeId = hexToDecMap.get(ringList[0]);
+  for (let i = 0; i < ringList.length; i++) {
+    if (ringList[i] >= objId) {
+      nodeId = hexToDecMap.get(ringList[i]);
+      break;
+    }
+  }
+  return nodeId;
 }
 
 
 function rendezvousHash(kid, nids) {
+  const ringList = [];
+  const hexToDecMap = new Map();
+  nids.forEach((nid)=>{
+    const combinedHashedId = idToNum(getID(nid+kid));
+    ringList.push(combinedHashedId);
+    hexToDecMap.set(combinedHashedId, nid);
+  });
+  ringList.sort();
+  return hexToDecMap.get(ringList[0]);
 }
 
 module.exports = {
