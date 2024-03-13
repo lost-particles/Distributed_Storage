@@ -3,8 +3,8 @@ const id = require('../util/id');
 const localComm = require('../local/comm');
 const localGroups = require('../local/groups');
 
-let context = {};
 let mem = (config) => {
+  let context = {};
   context.gid = config.gid || 'all'; // node group
   context.hash = config.hash || id.naiveHash; // hash function
   return {get: function(key, callback=(e, v)=>{}) {
