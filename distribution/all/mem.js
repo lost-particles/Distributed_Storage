@@ -1,7 +1,6 @@
 const util = require('../util/util');
 const id = require('../util/id');
 const localComm = require('../local/comm');
-const globalComm = require('./comm');
 const localGroups = require('../local/groups');
 
 let context = {};
@@ -11,7 +10,7 @@ let mem = (config) => {
   return {get: function(key, callback=(e, v)=>{}) {
     if (key === null) {
       const remote = {service: 'mem', method: 'get'};
-      const message = [key];
+      const message = [context.gid+'#null'];
       distribution[context.gid].comm.send(message, remote, (e, v)=>{
         // let aggregatedErrors = [];
         let aggregatedKeys = [];
@@ -37,7 +36,7 @@ let mem = (config) => {
           targetNid = context.hash(id.getID(key), nids);
           const remote = {node: nodeHashes.get(targetNid),
             service: 'mem', method: 'get'};
-          const message = [key];
+          const message = [context.gid+'#'+key];
           localComm.send(message, remote, callback);
         }
       });
@@ -60,7 +59,7 @@ let mem = (config) => {
         targetNid = context.hash(id.getID(key), nids);
         const remote = {node: nodeHashes.get(targetNid),
           service: 'mem', method: 'put'};
-        const message = [obj, key];
+        const message = [obj, context.gid+'#'+key];
         localComm.send(message, remote, callback);
       }
     });
@@ -78,7 +77,7 @@ let mem = (config) => {
         targetNid = context.hash(id.getID(key), nids);
         const remote = {node: nodeHashes.get(targetNid),
           service: 'mem', method: 'del'};
-        const message = [key];
+        const message = [context.gid+'#'+key];
         localComm.send(message, remote, callback);
       }
     });
