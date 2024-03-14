@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const status = require('./status');
 const util = require('../util/util');
+const id = require('../util/id');
 let nid = null;
 
 status.get(['nid'], (e, v)=>{
@@ -37,7 +38,7 @@ const store = {
           const allKeys = [];
           files.forEach((eachFile)=>{
             if (eachFile.toString().startsWith(localGid)) {
-              allKeys.push(eachFile.toString().replace('.txt', ''));
+              allKeys.push(eachFile.toString().replace(localGid+'#', '').replace('.txt', ''));
             }
           });
           callback(null, allKeys);
@@ -78,6 +79,8 @@ const store = {
     let localGid = 'local';
     if (key === null) {
       key = localGid + '#' + id.getID(obj);
+    } else if (!key.includes('#')) {
+      key = localGid + '#' + key;
     }
     const filePath = path.join(__dirname, this.dirPath+key+'.txt');
     fs.mkdir(path.join(__dirname, this.dirCreationPath), {recursive: true},
