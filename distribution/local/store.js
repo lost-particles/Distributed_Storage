@@ -25,14 +25,20 @@ const store = {
   dirPath: '../../store/'+nid+'/',
   dirCreationPath: '../../store/'+nid,
   get: function(key, callback=(e, v)=>{}) {
-    if (key === null) {
+    let localGid = 'local';
+    if (key === null || key.includes('null')) {
+      if (key!==null && key.includes('null')) {
+        localGid = key.split('#')[0];
+      }
       fs.readdir(path.join(__dirname, this.dirCreationPath), (err, files)=>{
         if (err) {
           callback(err, null);
         } else {
           const allKeys = [];
           files.forEach((eachFile)=>{
-            allKeys.push(eachFile.toString().replace('.txt', ''));
+            if (eachFile.toString().startsWith(localGid)) {
+              allKeys.push(eachFile.toString().replace('.txt', ''));
+            }
           });
           callback(null, allKeys);
           // const fileCount = files.length;
@@ -55,6 +61,9 @@ const store = {
         }
       });
     } else {
+      if (!key.includes('#')) {
+        key = localGid + '#' + key;
+      }
       fs.readFile(path.join(__dirname, this.dirPath+key+'.txt'), 'utf8',
           (err, data) => {
             if (err) {
@@ -66,8 +75,9 @@ const store = {
     }
   },
   put: function(obj, key, callback=console.log) {
+    let localGid = 'local';
     if (key === null) {
-      key = id.getID(obj);
+      key = localGid + '#' + id.getID(obj);
     }
     const filePath = path.join(__dirname, this.dirPath+key+'.txt');
     fs.mkdir(path.join(__dirname, this.dirCreationPath), {recursive: true},
@@ -85,6 +95,9 @@ const store = {
         });
   },
   del: function(key, callback = console.log) {
+    if (!key.includes('#')) {
+      key = 'local#' + key;
+    }
     this.get(key, (e, v)=>{
       if (e) {
         callback(e, null);

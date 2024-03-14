@@ -12,7 +12,7 @@ let store = (config) => {
     get: function(key, callback=(e, v)=>{}) {
       if (key === null) {
         const remote = {service: 'store', method: 'get'};
-        const message = [key];
+        const message = [context.gid + '#null'];
         distribution[context.gid].comm.send(message, remote, (e, v)=>{
           // let aggregatedErrors = [];
           let aggregatedKeys = [];
@@ -38,7 +38,7 @@ let store = (config) => {
             targetNid = context.hash(id.getID(key), nids);
             const remote = {node: nodeHashes.get(targetNid),
               service: 'store', method: 'get'};
-            const message = [key];
+            const message = [context.gid + '#' + key];
             localComm.send(message, remote, callback);
           }
         });
@@ -61,7 +61,7 @@ let store = (config) => {
           targetNid = context.hash(id.getID(key), nids);
           const remote = {node: nodeHashes.get(targetNid),
             service: 'store', method: 'put'};
-          const message = [obj, key];
+          const message = [obj, context.gid + '#' + key];
           localComm.send(message, remote, callback);
         }
       });
@@ -79,7 +79,7 @@ let store = (config) => {
           targetNid = context.hash(id.getID(key), nids);
           const remote = {node: nodeHashes.get(targetNid),
             service: 'store', method: 'del'};
-          const message = [key];
+          const message = [context.gid + '#' + key];
           localComm.send(message, remote, callback);
         }
       });
