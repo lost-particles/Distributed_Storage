@@ -27,6 +27,11 @@ const store = {
   dirCreationPath: '../../store/'+nid,
   get: function(key, callback=(e, v)=>{}) {
     let localGid = 'local';
+    console.log('Inside local.store.get');
+    if (key instanceof Object) {
+      localGid = key.gid;
+      key = key.key;
+    }
     if (key === null || key.includes('null')) {
       if (key!==null && key.includes('null')) {
         localGid = key.split('#')[0];

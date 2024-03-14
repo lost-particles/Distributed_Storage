@@ -4,8 +4,12 @@ let context = {gid: 'local'};
 let mem = {
   records: new Map(),
   get: function(key, callback=(e, v)=>{}) {
+    let tempGid = context.gid;
+    if (key instanceof Object) {
+      tempGid = key.gid;
+      key = key.key;
+    }
     if (key === null || key.includes('null')) {
-      let tempGid = context.gid;
       if (key !==null && key.includes('null')) {
         tempGid = key.split('#')[0];
       }
