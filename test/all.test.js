@@ -879,6 +879,34 @@ test(
     },
 );
 
+test(
+    '(1.5 pts) all.mem.put(jcarb)/local.comm.send(mem.get(jcarb))',
+    (done) => {
+      const user = {first: 'Josiah', last: 'Carberry'};
+      const key = 'jcarbspcs';
+      const kid = id.getID(key);
+      const nodes = [n2, n4, n6];
+      const nids = nodes.map((node) => id.getNID(node));
+
+      distribution.group3.mem.put(user, key, (e, v) => {
+        const nid = id.rendezvousHash(kid, nids);
+        const pickedNode = nodes.filter((node)=> id.getNID(node) === nid)[0];
+        const remote = {node: pickedNode, service: 'mem', method: 'get'};
+        const message = [{gid: 'group3', key: key}];
+
+        distribution.local.comm.send(message, remote, (e, v) => {
+          try {
+            expect(e).toBeFalsy();
+            expect(v).toEqual(user);
+            done();
+          } catch (error) {
+            done(error);
+          }
+        });
+      });
+    },
+);
+
 test('(2 pts) all.store.reconf(naiveHash)', (done) => {
   //  ________________________________________
   // / NOTE: If this test fails locally, make \

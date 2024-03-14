@@ -9,6 +9,7 @@ let mem = {
       tempGid = key.gid;
       key = key.key;
     }
+    console.log('key and gid are : '+ key+ tempGid);
     if (key === null || key.includes('null')) {
       if (key !==null && key.includes('null')) {
         tempGid = key.split('#')[0];
@@ -22,7 +23,7 @@ let mem = {
       callback(null, keys);
     } else {
       if (!key.includes('#')) {
-        key = context.gid + '#' + key;
+        key = tempGid + '#' + key;
       }
       if (this.records.has(key)) {
         callback(null, this.records.get(key));
