@@ -61,7 +61,7 @@ function rendezvousHash(kid, nids) {
     hexToDecMap.set(combinedHashedId, nid);
   });
   ringList.sort();
-  return hexToDecMap.get(ringList[0]);
+  return hexToDecMap.get(ringList[ringList.length-1]);
 }
 
 module.exports = {
