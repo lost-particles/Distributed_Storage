@@ -56,7 +56,7 @@ function rendezvousHash(kid, nids) {
   const ringList = [];
   const hexToDecMap = new Map();
   nids.forEach((nid)=>{
-    const combinedHashedId = idToNum(getID(nid+kid));
+    const combinedHashedId = idToNum(getID(kid + nid));
     ringList.push(combinedHashedId);
     hexToDecMap.set(combinedHashedId, nid);
   });

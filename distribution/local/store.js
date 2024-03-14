@@ -43,7 +43,8 @@ const store = {
           const allKeys = [];
           files.forEach((eachFile)=>{
             if (eachFile.toString().startsWith(localGid)) {
-              allKeys.push(eachFile.toString().replace(localGid+'#', '').replace('.txt', ''));
+              allKeys.push(eachFile.toString().replace(localGid+'#', '')
+                  .replace('.txt', ''));
             }
           });
           callback(null, allKeys);
