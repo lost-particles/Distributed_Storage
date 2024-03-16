@@ -83,7 +83,82 @@ let store = (config) => {
           localComm.send(message, remote, callback);
         }
       });
-    }, reconf: () => {},
+    }, reconf: function(prevGroup, callback = (e, v)=>{}) {
+      const prevNids = [];
+      const prevNodeHashes = new Map();
+      const currentNids = [];
+      const currentNodeHashes = new Map();
+      const relocationMapping = new Map();
+      Object.entries(prevGroup).forEach((node)=>{
+        prevNids.push(id.getID(node[1]));
+        prevNodeHashes.set(id.getID(node[1]), node[1]);
+      });
+      localGroups.get(context.gid, (e, v)=>{
+        if (e) {
+          callback(e, null);
+        } else {
+          Object.entries(v).forEach((node)=>{
+            currentNids.push(id.getID(node[1]));
+            currentNodeHashes.set(id.getID(node[1]), node[1]);
+          });
+          this.get(null, (e, allKeys)=>{
+            if (e && Object.entries(e).length !== 0) {
+              callback(e, null);
+            } else {
+              allKeys.forEach((eachKey)=>{
+                let previousTargetHash = context.hash(id.getID(eachKey),
+                    prevNids);
+                let currentTargetHash = context.hash(id.getID(eachKey),
+                    currentNids);
+                if (prevNodeHashes.get(previousTargetHash) !==
+                    currentNodeHashes.get(currentTargetHash)) {
+                  const routeMapping = {};
+                  routeMapping['source'] =
+                      prevNodeHashes.get(previousTargetHash);
+                  routeMapping['dest'] =
+                      currentNodeHashes.get(currentTargetHash);
+                  relocationMapping.set(eachKey, routeMapping);
+                }
+              });
+              let relocationCount = 0;
+              const totalRelocation = relocationMapping.size;
+
+              relocationMapping.forEach((mapping, eachKey)=>{
+                let remote = {node: mapping['source'],
+                  service: 'store', method: 'get'};
+                let message = [context.gid+'#'+eachKey];
+                localComm.send(message, remote, (e, v)=>{
+                  if (e && Object.entries(e).length !== 0) {
+                    callback(e, null);
+                  } else {
+                    remote = {node: mapping['dest'],
+                      service: 'store', method: 'put'};
+                    message = [v, context.gid+'#'+eachKey];
+                    localComm.send(message, remote, (ee, vv)=>{
+                      if (ee && Object.entries(ee).length !== 0) {
+                        callback(ee, null);
+                      } else {
+                        remote = {node: mapping['source'],
+                          service: 'store', method: 'del'};
+                        message = [context.gid+'#'+eachKey];
+                        localComm.send(message, remote, (eee, vvv)=>{
+                          relocationCount++;
+                          if (eee && Object.entries(eee).length !== 0) {
+                            callback(eee, null);
+                          } else if (relocationCount === totalRelocation) {
+                            callback(eee, vvv);
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              });
+            }
+          });
+        }
+      });
+    },
   };
 };
 
