@@ -4,8 +4,6 @@ const id = distribution.util.id;
 
 const groupsTemplate = require('../distribution/all/groups');
 
-jest.setTimeout(30000);
-
 // This group is used for testing most of the functionality
 const mygroupGroup = {};
 // These groups are used for testing hashing
